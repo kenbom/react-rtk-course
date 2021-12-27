@@ -1,5 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchCount } from './counterAPI';
+import { createSlice } from '@reduxjs/toolkit';
 
 export const taskSlice = createSlice({
     name: 'task',
@@ -14,15 +13,16 @@ export const taskSlice = createSlice({
     reducers: {
         newTask: (state, action) => {
             state.idCount++;
-            const newItem = {cd 
+            const newItem = { 
                 id: state.idCount,
                 title: action.payload,
                 completed: false
             }
             state.tasks = [newItem, ...state.tasks]
         },
+
         deleteTask: (state, action) => {
-            state.tasks = state.tasks.filter((t) = t.id !== action.payload.id);
+            state.tasks = state.tasks.filter((t) => t.id !== action.payload.id);
         },
         // Use the PayloadAction type to declare the contents of `action.payload`
         completeTask: (state, action) => {
@@ -37,11 +37,6 @@ export const taskSlice = createSlice({
 
 export const { newTask, deleteTask, completeTask } = taskSlice.actions;
 
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectTask = (state) => state.task.value;
-
-
+export const selectTasks = (state) => state.task.tasks;
 
 export default taskSlice.reducer;
