@@ -1,35 +1,43 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchCount } from './counterAPI';
 
-export const taskSlice = taskSlice({
-  name: 'task',
-  initialState: {
-    idCount:3,
-    tasks: [
-      { id: 1, title: titleA, completed: false, },
-      { id: 2, title: titleB, completed: true, },
-      { id: 3, title: titleC, completed: false, },
-    ]
+const initialState = {
+  value: 0,
+  status: 'idle',
+};
+
+// The function below is called a thunk and allows us to perform async logic. It
+// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
+// will call the thunk with the `dispatch` function as the first argument. Async
+// code can then be executed and other actions can be dispatched. Thunks are
+// typically used to make async requests.
+export const incrementAsync = createAsyncThunk(
+  'counter/fetchCount',
+  async (amount) => {
+    const response = await fetchCount(amount);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
   }
+);
+
+export const counterSlice = createSlice({
+  name: 'counter',
+  initialState,
+  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    newTask: (state, action) => {
-     state.idCount ++;
-     const newItem ={
-       id: state.idCount,
-       title: action.payload,
-       completed: false
-     }
-     state.tasks = [newItem, ...state.tasks]
+    increment: (state) => {
+      // Redux Toolkit allows us to write "mutating" logic in reducers. It
+      // doesn't actually mutate the state because it uses the Immer library,
+      // which detects changes to a "draft state" and produces a brand new
+      // immutable state based off those changes
+      state.value += 1;
     },
-    deleteTask: (state, action) => {
-      state.tasks = state.filter((t)= t.id!== action.payload.id);
+    decrement: (state) => {
+      state.value -= 1;
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
-    completeTask: (state, action) => {
-      const task = state.tasks.find((t) => t.id === action.payload.id)
-      if(task){
-        task.completed !== task.completed
-      }
+    incrementByAmount: (state, action) => {
+      state.value += action.payload;
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -63,3 +71,4 @@ export const incrementIfOdd = (amount) => (dispatch, getState) => {
 };
 
 export default counterSlice.reducer;
+
